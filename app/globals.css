@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #efefef;
+  --ink: #0a191c;
+  --paper: #ffffff;
+
+  --font-display-stack: var(--font-display), "Oswald", "Arial Narrow", Georgia, serif;
+  --font-body-stack: var(--font-body), "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body-stack);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.font-display { font-family: var(--font-display-stack); font-weight: 400; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
