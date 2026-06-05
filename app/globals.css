@@ -27,6 +27,12 @@ body {
 
 .font-display { font-family: var(--font-display-stack); font-weight: 400; }
 
+/* Custom cursor: hide the native pointer only on hover-capable, fine-pointer
+   devices (desktop). Touch devices keep their default behaviour. */
+@media (hover: hover) and (pointer: fine) {
+  body, body * { cursor: none !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }

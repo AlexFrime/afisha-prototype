@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { displayFont, bodyFont } from "./fonts";
 import "./globals.css";
+import Cursor from "@/components/Cursor";
 
 export const metadata: Metadata = {
   title: "Мастер и Маргарита — Classic Afisha",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" className={`${displayFont.variable} ${bodyFont.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Cursor />
+        {children}
+      </body>
     </html>
   );
 }

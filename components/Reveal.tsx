@@ -4,15 +4,15 @@ import { motion, useInView, type Variants } from "motion/react";
 import { useRef, type ReactNode } from "react";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   <Reveal> — the bidirectional scroll animation.
+   <Reveal> — forward-only scroll animation.
 
-   Like the luminouslabs.health effect (fade + blur + rise on enter) BUT it
-   reverses when the element leaves the viewport — so scrolling UP re-blurs
-   and re-hides the block, and scrolling back DOWN reveals it again.
+   Like the luminouslabs.health effect (fade + blur + rise on enter). It plays
+   ONCE the first time the element enters the viewport while scrolling down, and
+   then stays clear — scrolling back UP does NOT re-blur or re-hide it.
 
-   The trick: useInView with { once: false } flips `inView` true/false every
-   time the element crosses the viewport margin, and we drive `animate`
-   between the "visible" and "hidden" variants off that boolean.
+   The trick: useInView with { once: true } latches `inView` to true the first
+   time the element crosses the viewport margin, so `animate` goes hidden →
+   visible once and never returns to hidden.
 ───────────────────────────────────────────────────────────────────────── */
 
 type RevealProps = {
@@ -22,7 +22,7 @@ type RevealProps = {
   blur?: number;     // starting blur in px
   className?: string;
   /** viewport band that counts as "in view"; trims top & bottom so the
-      reverse triggers a little before the element fully exits. */
+      reveal triggers a little before the element fully enters. */
   margin?: string;
 };
 
@@ -35,8 +35,8 @@ export default function Reveal({
   margin = "-12% 0px -12% 0px",
 }: RevealProps) {
   const ref = useRef(null);
-  // once:false → fires in BOTH directions, every time it crosses the band
-  const inView = useInView(ref, { once: false, margin: margin as any });
+  // once:true → fires the first time it enters, then stays visible (no reverse)
+  const inView = useInView(ref, { once: true, margin: margin as any });
 
   const variants: Variants = {
     hidden: { opacity: 0, y, filter: `blur(${blur}px)` },

@@ -30,7 +30,7 @@ const item = {
 
 export default function Hero() {
   return (
-    <section className="relative flex min-h-[640px] w-full flex-col items-center justify-between overflow-hidden px-5 py-8 text-[#efefef] sm:px-8 md:min-h-[800px] md:px-20 md:py-12">
+    <section className="relative flex h-[100svh] min-h-[640px] w-full flex-col items-center justify-between overflow-hidden px-5 py-8 text-[#efefef] sm:px-8 md:h-[1080px] md:px-20 md:py-12">
       {/* background: video if provided, otherwise the Figma image */}
       <div aria-hidden className="absolute inset-0 -z-10">
         {HERO_VIDEO ? (
