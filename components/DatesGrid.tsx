@@ -35,7 +35,7 @@ export default function DatesGrid() {
           </Pill>
         </Reveal>
         <Reveal delay={0.05}>
-          <h2 className="font-display text-[40px] leading-[0.85] tracking-[-1.4px] text-ink md:text-[70px]">
+          <h2 className="font-display text-[34px] leading-[0.85] tracking-[-1.4px] text-ink sm:text-[48px] md:text-[70px]">
             Даты и билеты
           </h2>
         </Reveal>

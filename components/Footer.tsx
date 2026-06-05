@@ -16,7 +16,7 @@ export default function Footer() {
       <Reveal>
         <div className="mx-auto flex max-w-[1202px] flex-col items-start justify-between gap-12 md:flex-row md:items-end">
           <div className="flex w-[403px] max-w-full flex-col gap-[42px] text-ink">
-            <span className="font-display text-[40px] leading-[0.85] tracking-[-1.4px] md:text-[70px]">Classic Afisha</span>
+            <span className="font-display text-[34px] leading-[0.85] tracking-[-1.4px] sm:text-[48px] md:text-[70px]">Classic Afisha</span>
             <div className="flex gap-5 text-[20px] tracking-[-0.2px]">
               <div className="flex flex-col gap-[18px]">
                 {col1.map((l) => <a key={l} href="#" className="underline underline-offset-2 hover:opacity-60">{l}</a>)}

@@ -32,7 +32,7 @@ export default function Reviews() {
     <section className="w-full bg-bg px-5 py-[64px] sm:px-8 md:px-[120px] md:py-[100px]">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-[30px]">
         <Reveal>
-          <h2 className="font-display text-center text-[40px] leading-[0.85] tracking-[-1.4px] text-ink md:text-[70px]">
+          <h2 className="font-display text-center text-[34px] leading-[0.85] tracking-[-1.4px] text-ink sm:text-[48px] md:text-[70px]">
             Живые отзывы, настоящие эмоции
           </h2>
         </Reveal>

@@ -27,7 +27,7 @@ export default function Faq() {
     <section className="w-full bg-bg px-5 py-[64px] sm:px-8 md:px-[120px] md:py-[100px]">
       <div className="mx-auto flex max-w-[1202px] flex-col gap-12 lg:flex-row lg:gap-24">
         <Reveal className="lg:w-[548px] lg:shrink-0">
-          <h2 className="font-display text-[40px] leading-[0.9] tracking-[-1.2px] text-ink md:text-[64px]">
+          <h2 className="font-display text-[34px] leading-[0.9] tracking-[-1.2px] text-ink sm:text-[48px] md:text-[64px]">
             Часто задаваемые вопросы
           </h2>
           <div className="mt-8">

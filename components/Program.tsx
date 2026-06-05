@@ -18,7 +18,7 @@ export default function Program() {
     <section className="w-full border-y border-white bg-bg px-5 py-[64px] sm:px-8 md:px-[120px] md:py-[100px]">
       <div className="mx-auto max-w-[1200px]">
         <Reveal>
-          <h2 className="font-display mb-10 text-center text-[40px] leading-[0.85] tracking-[-1.4px] text-ink md:mb-[60px] md:text-[70px]">
+          <h2 className="font-display mb-10 text-center text-[34px] leading-[0.85] tracking-[-1.4px] text-ink sm:text-[48px] md:mb-[60px] md:text-[70px]">
             Программа мероприятия
           </h2>
         </Reveal>

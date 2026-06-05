@@ -30,7 +30,7 @@ const item = {
 
 export default function Hero() {
   return (
-    <section className="relative flex h-[100svh] min-h-[640px] w-full flex-col items-center justify-between overflow-hidden px-5 py-8 text-[#efefef] sm:px-8 md:h-[1080px] md:px-20 md:py-12">
+    <section data-cursor="light" className="relative flex h-[100svh] min-h-[640px] w-full flex-col items-center justify-between overflow-hidden px-5 py-8 text-[#efefef] sm:px-8 md:h-[900px] md:px-20 md:py-12">
       {/* background: video if provided, otherwise the Figma image */}
       <div aria-hidden className="absolute inset-0 -z-10">
         {HERO_VIDEO ? (
@@ -70,7 +70,7 @@ export default function Hero() {
 
         <motion.h1
           variants={item}
-          className="font-display max-w-[971px] text-center text-[44px] leading-[0.85] tracking-[-1.8px] sm:text-[64px] md:text-[90px]"
+          className="font-display max-w-[971px] text-center text-[40px] leading-[0.85] tracking-[-1.8px] sm:text-[64px] md:text-[90px]"
         >
           Мастер и Маргарита{" "}
           <span className="text-white/40">музыкальный спектакль с иммерсивными декорациями</span>

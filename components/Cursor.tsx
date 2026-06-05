@@ -3,21 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   <Cursor> — custom pointer, mounted once globally.
+   <Cursor> — a single solid dot that follows the mouse, mounted once globally.
 
-   • Default: an outlined RING (~30px, transparent center).
-   • Over interactive elements (a, button, [role=button], inputs, and anything
-     tagged data-cursor="hover" — FAQ rows, cards, pills): a smaller FILLED dot.
-   • Colour adapts to the background under the pointer: white on dark, black on
-     light. We read elementFromPoint → walk up parents for the first opaque
-     background colour → decide by luminance.
-   • One rAF loop drives a lerped follow; position is written to the element's
-     transform via ref (no per-frame React state). pointer-events-none, fixed,
-     high z-index. Hidden entirely on touch / no-hover devices.
+   • Always one filled circle (~20px) with a soft blurred glow. No ring, no
+     fill-on-hover state.
+   • Colour adapts to the background: black (#0a191c) over light areas, white
+     (#ffffff) over dark ones.
+   • Source of truth: walking up from elementFromPoint, an ancestor tagged
+     data-cursor="light" forces WHITE (it's a dark area) and "dark" forces
+     BLACK (light area). Only if none is found do we fall back to sampling the
+     first opaque background-color's luminance — this keeps it accurate over
+     the Hero photo where elementFromPoint reads transparent.
+   • One rAF loop with a slight lerp; position written to transform via ref
+     (never setState per frame). fixed, z-index 9999, pointer-events none.
+   • Touch / no-hover devices: render nothing, leave the native cursor alone.
 ───────────────────────────────────────────────────────────────────────── */
 
-const RING = 30; // outlined ring diameter (px)
-const DOT = 12; // filled dot diameter (px)
+const DOT = 20; // dot diameter (px)
 
 function parseRGB(c: string): [number, number, number, number] | null {
   const m = c.match(/rgba?\(([^)]+)\)/);
@@ -27,86 +29,70 @@ function parseRGB(c: string): [number, number, number, number] | null {
   return [r, g, b, a];
 }
 
-/** Walk up from `el`, return the first element background with alpha > 0. */
-function effectiveBg(el: Element | null): [number, number, number] {
+/** true → cursor should be WHITE (we're over a dark area). */
+function resolveDark(el: Element | null): boolean {
   let node: Element | null = el;
+  // 1) data-cursor source of truth wins
   while (node) {
-    const bg = getComputedStyle(node).backgroundColor;
-    const rgb = parseRGB(bg);
-    if (rgb && rgb[3] > 0.05) return [rgb[0], rgb[1], rgb[2]];
+    const tag = (node as HTMLElement).dataset?.cursor;
+    if (tag === "light") return true; // dark area → white dot
+    if (tag === "dark") return false; // light area → black dot
     node = node.parentElement;
   }
-  // nothing opaque found → assume the page background (light #efefef)
-  return [239, 239, 239];
-}
-
-/** true if the colour is dark (so the cursor should be white). */
-function isDark([r, g, b]: [number, number, number]): boolean {
-  // relative luminance (sRGB approximation)
-  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return lum < 0.5;
+  // 2) fall back to luminance of first opaque background
+  node = el;
+  while (node) {
+    const rgb = parseRGB(getComputedStyle(node).backgroundColor);
+    if (rgb && rgb[3] > 0.05) {
+      const lum = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+      return lum < 0.5;
+    }
+    node = node.parentElement;
+  }
+  // 3) nothing found → assume light page background
+  return false;
 }
 
 export default function Cursor() {
-  const ringRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
 
-  // refs avoid per-frame React re-renders
   const target = useRef({ x: -100, y: -100 });
   const pos = useRef({ x: -100, y: -100 });
-  const hovering = useRef(false);
-  const dark = useRef(false); // true → white cursor
-  const visible = useRef(false);
+  const dark = useRef(false);
 
   useEffect(() => {
-    // only on devices that actually have a fine hover pointer
     if (typeof window === "undefined") return;
-    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    if (!canHover) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     setEnabled(true);
 
-    const ring = ringRef.current!;
+    const dot = dotRef.current!;
     let raf = 0;
-    let sampleTick = 0;
-
-    const interactiveSel =
-      'a, button, [role="button"], input, textarea, select, label, [data-cursor="hover"]';
+    let tick = 0;
 
     const onMove = (e: MouseEvent) => {
       target.current.x = e.clientX;
       target.current.y = e.clientY;
-      if (!visible.current) {
-        visible.current = true;
-        ring.style.opacity = "1";
-      }
+      dot.style.opacity = "1";
 
-      // sample under-pointer state every few frames (throttle)
-      sampleTick++;
-      if (sampleTick % 3 === 0) {
-        const el = document.elementFromPoint(e.clientX, e.clientY);
-        hovering.current = !!el?.closest(interactiveSel);
-        dark.current = isDark(effectiveBg(el));
+      // sample under-pointer colour every few frames (throttle)
+      if (tick++ % 3 === 0) {
+        dark.current = resolveDark(document.elementFromPoint(e.clientX, e.clientY));
       }
     };
 
     const onLeave = () => {
-      visible.current = false;
-      ring.style.opacity = "0";
+      dot.style.opacity = "0";
     };
 
     const loop = () => {
-      // lerp toward target for a smooth, slightly trailing follow
-      pos.current.x += (target.current.x - pos.current.x) * 0.2;
-      pos.current.y += (target.current.y - pos.current.y) * 0.2;
+      pos.current.x += (target.current.x - pos.current.x) * 0.22;
+      pos.current.y += (target.current.y - pos.current.y) * 0.22;
 
-      const size = hovering.current ? DOT : RING;
-      const color = dark.current ? "#efefef" : "#0a191c";
-
-      ring.style.width = `${size}px`;
-      ring.style.height = `${size}px`;
-      ring.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%)`;
-      ring.style.borderColor = color;
-      ring.style.backgroundColor = hovering.current ? color : "transparent";
+      const color = dark.current ? "#ffffff" : "#0a191c";
+      dot.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%)`;
+      dot.style.backgroundColor = color;
+      dot.style.boxShadow = `0 0 12px 2px ${dark.current ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0.20)"}`;
 
       raf = requestAnimationFrame(loop);
     };
@@ -126,24 +112,21 @@ export default function Cursor() {
 
   return (
     <div
-      ref={ringRef}
+      ref={dotRef}
       aria-hidden
       style={{
         position: "fixed",
         top: 0,
         left: 0,
-        width: RING,
-        height: RING,
+        width: DOT,
+        height: DOT,
         borderRadius: "9999px",
-        borderWidth: 1.5,
-        borderStyle: "solid",
-        borderColor: "#0a191c",
-        backgroundColor: "transparent",
+        backgroundColor: "#0a191c",
+        boxShadow: "0 0 12px 2px rgba(0,0,0,0.20)",
         pointerEvents: "none",
         zIndex: 9999,
         opacity: 0,
-        willChange: "transform, width, height",
-        transition: "width 0.18s ease, height 0.18s ease, background-color 0.18s ease",
+        willChange: "transform",
       }}
     />
   );

@@ -52,7 +52,7 @@ export default function Details() {
     <section className="w-full bg-bg px-5 py-[64px] sm:px-8 md:px-[40px] md:py-[100px]">
       <div className="mx-auto max-w-[1360px]">
         <Reveal>
-          <h2 className="font-display mb-10 text-center text-[40px] leading-[0.85] tracking-[-1.4px] text-ink md:mb-[60px] md:text-[70px]">
+          <h2 className="font-display mb-10 text-center text-[34px] leading-[0.85] tracking-[-1.4px] text-ink sm:text-[48px] md:mb-[60px] md:text-[70px]">
             Детали спектакля
           </h2>
         </Reveal>

@@ -30,7 +30,7 @@ body {
 /* Custom cursor: hide the native pointer only on hover-capable, fine-pointer
    devices (desktop). Touch devices keep their default behaviour. */
 @media (hover: hover) and (pointer: fine) {
-  body, body * { cursor: none !important; }
+  html, body, *, *:hover { cursor: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
