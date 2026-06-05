@@ -27,10 +27,10 @@ body {
 
 .font-display { font-family: var(--font-display-stack); font-weight: 400; }
 
-/* Custom cursor: hide the native pointer only on hover-capable, fine-pointer
-   devices (desktop). Touch devices keep their default behaviour. */
+/* Custom cursor replaces the OS pointer — but only on hover-capable, fine
+   pointer devices (desktop). Touch devices keep their native behaviour. */
 @media (hover: hover) and (pointer: fine) {
-  html, body, *, *:hover { cursor: none !important; }
+  *, *:hover, a, button, input { cursor: none !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

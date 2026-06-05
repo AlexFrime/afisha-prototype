@@ -16,8 +16,8 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${displayFont.variable} ${bodyFont.variable}`}>
       <body>
-        <Cursor />
         {children}
+        <Cursor />
       </body>
     </html>
   );
