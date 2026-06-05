@@ -90,7 +90,7 @@ export default function Cursor() {
       const color = dark.current ? "#ffffff" : "#0a191c";
       dot.style.transform =
         `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%)`;
-      dot.style.backgroundColor = color;
+      dot.style.borderColor = color;
       dot.style.boxShadow = dark.current
         ? "0 0 14px 3px rgba(0,0,0,0.45)"
         : "0 0 14px 3px rgba(0,0,0,0.18)";
@@ -121,7 +121,8 @@ export default function Cursor() {
         width: DOT,
         height: DOT,
         borderRadius: "50%",
-        backgroundColor: "#0a191c",
+        backgroundColor: "transparent",
+        border: "2px solid #0a191c",
         boxShadow: "0 0 14px 3px rgba(0,0,0,0.18)",
         pointerEvents: "none",
         zIndex: 9999,
